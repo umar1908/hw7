@@ -75,7 +75,6 @@ template<int N>
 class Pi_calc{
 double inside_circle;
 int number_of_points;
-// Random_Point_Generator random_point;
 
 
 
@@ -95,7 +94,6 @@ public:
     }
 
     time.stop();
-    // cout<<"Time: "<<time.get()<<" ms"<<endl;
     return make_pair<double,double>(4*static_cast<double>(inside_circle)/number_of_points,time.get());
   }
 
@@ -132,9 +130,6 @@ int main(){
  data=p5();
  cout<<"pi= "<<data.first<<endl<<"Time: "<<data.second<<" ms"<<endl<<endl;
 
- Pi_calc<5> p6(1000000000);
- data=p6();
- cout<<"pi= "<<data.first<<endl<<"Time: "<<data.second<<" ms"<<endl<<endl;
 
 
 
