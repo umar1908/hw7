@@ -14,6 +14,7 @@ using namespace std;
 #include <thread>
 #include<future>
 #include<numeric>
+#include<fstream>
 
 class Timer{ //класс таймаре
 private:
@@ -34,13 +35,14 @@ public:
   auto get() const{
     return chrono::duration_cast<chrono::milliseconds>(result).count();
   }
+
 };
 
 
 
 
 template<typename Iterator,typename T >
-T parallel_accumulate(Iterator first, Iterator last, T init,size_t num){
+T parallel_accumulate(Iterator first, Iterator last, T init,int num){
   const size_t length = distance(first, last);
   const size_t elem_per_thread = length/num;
   T result;
@@ -70,13 +72,29 @@ T parallel_accumulate(Iterator first, Iterator last, T init,size_t num){
 int main(){
   system("chcp 1251"); //для корректного отображения кирилицы
   cout<<endl;
-  std::vector<int> v(100000000);
+  const unsigned long int N=100000000; //количество элементов в контейнере
+  std::vector<unsigned long long  int> v(N);
+  cout<<"Идут вычисления, ожидайте...\n";
   iota(v.begin(),v.end(),1);
   Timer time;
-  time.start();
-  cout<<parallel_accumulate(v.begin(),v.end(),0,10000)<<endl;
-  time.stop();
-  cout<<time.get()<<" ms";
+  unsigned long long int  value;
+  unsigned long long int reference=accumulate(v.begin(),v.end(),0);
+  ofstream file("data.dat");
+  if (!file)
+    cout<<"error!";
+  for (size_t i = 1; i < 1000; i++) {
+    time.start();
+    value=parallel_accumulate(v.begin(),v.end(),0,i);
+    time.stop();
+    cout<<"Результат стандартной accumulate (для сверки): "<<reference<<endl;
+    cout<<"Результат parallel_accumulate ("<<i<<"потоков): " <<value<<endl;
+    cout<<"Time "<<time.get()<<" ms"<<endl<<endl<<endl;
+    file<<i<<" , "<<time.get()<<endl;
+  }
+  file.close();
+//Как и ожидалось, оптимальное кол-во потоков равно колличеству вычислительных ядер на моей машине (2 ядра, 4 потока).
+// При существенном увеличении кол-ва потоков, время начинает линейно увеличиваться от кол-ва потоков
+
 
 
 }
