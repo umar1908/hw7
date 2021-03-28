@@ -75,9 +75,6 @@ template<int N>
 class Pi_calc{
 double inside_circle;
 int number_of_points;
-
-
-
 public:
   Pi_calc(int num):number_of_points(num),inside_circle(0){}
   pair<double,double> operator()(){
